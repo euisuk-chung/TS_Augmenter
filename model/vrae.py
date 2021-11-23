@@ -41,16 +41,10 @@ class Encoder(nn.Module):
         :param x: input to the encoder, of shape (sequence_length, batch_size, number_of_features)
         :return: last hidden state of encoder, of shape (batch_size, hidden_size)
         """
-        
-        print('--------------------------')
-        print('DEBUGGING')
-        print(x.shape)
-        print('--------------------------')
-        
+
         _, (h_end, c_end) = self.model(x)
-        
-        h_end = h_end[:, -1, :]
-#         h_end = h_end[-1, :, :]
+
+        h_end = h_end[-1, :, :]
         return h_end
 
 
@@ -136,18 +130,13 @@ class Decoder(nn.Module):
         :return: outputs consisting of mean and std dev of vector
         """
         h_state = self.latent_to_hidden(latent)
-        print(h_state.shape)
+
         if isinstance(self.model, nn.LSTM):
             h_0 = torch.stack([h_state for _ in range(self.hidden_layer_depth)])
-            print(h_0.shape)
-            # TODO : Need for debugging
             decoder_output, _ = self.model(self.decoder_inputs, (h_0, self.c_0))
-            
         elif isinstance(self.model, nn.GRU):
-            # TODO : Need for debugging
             h_0 = torch.stack([h_state for _ in range(self.hidden_layer_depth)])
             decoder_output, _ = self.model(self.decoder_inputs, h_0)
-            
         else:
             raise NotImplementedError
 
@@ -311,6 +300,12 @@ class VRAE(BaseEstimator, nn.Module):
         t = 0
 
         for t, X in enumerate(train_loader):
+            
+            # required to swap axes, since dataloader gives output as follows:
+            # (batch_size x seq_len x num_of_features)
+            
+            X = X.permute(1,0,2)
+            #print(X.shape)
 
             self.optimizer.zero_grad()
             loss, recon_loss, kl_loss, _ = self.compute_loss(X)
@@ -344,16 +339,7 @@ class VRAE(BaseEstimator, nn.Module):
                                   batch_size = self.batch_size,
                                   shuffle = False,
                                   drop_last=True)
-        
-        ####################
-        print('debugging')
-        print('fit result')
-        print(dataset)
-        print(dataset[0])
-        tmp = iter(train_loader).next()
-        print(tmp.shape)
-        ####################
-        
+
         for i in range(self.n_epochs):
             print('Epoch: %s' % i)
 
@@ -412,6 +398,8 @@ class VRAE(BaseEstimator, nn.Module):
                 x_decoded = []
 
                 for t, x in enumerate(test_loader):
+                    x = x.permute(1, 0, 2)
+
                     x_decoded_each = self._batch_reconstruct(x)
                     x_decoded.append(x_decoded_each)
 
@@ -448,6 +436,8 @@ class VRAE(BaseEstimator, nn.Module):
                 z_run = []
 
                 for t, x in enumerate(test_loader):
+                    x = x.permute(1, 0, 2)
+
                     z_run_each = self._batch_transform(x)
                     z_run.append(z_run_each)
 
