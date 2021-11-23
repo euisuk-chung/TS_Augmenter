@@ -48,8 +48,9 @@ class Encoder(nn.Module):
         print('--------------------------')
         
         _, (h_end, c_end) = self.model(x)
-
-        h_end = h_end[-1, :, :]
+        
+        h_end = h_end[:, -1, :]
+#         h_end = h_end[-1, :, :]
         return h_end
 
 
@@ -135,13 +136,18 @@ class Decoder(nn.Module):
         :return: outputs consisting of mean and std dev of vector
         """
         h_state = self.latent_to_hidden(latent)
-
+        print(h_state.shape)
         if isinstance(self.model, nn.LSTM):
             h_0 = torch.stack([h_state for _ in range(self.hidden_layer_depth)])
+            print(h_0.shape)
+            # TODO : Need for debugging
             decoder_output, _ = self.model(self.decoder_inputs, (h_0, self.c_0))
+            
         elif isinstance(self.model, nn.GRU):
+            # TODO : Need for debugging
             h_0 = torch.stack([h_state for _ in range(self.hidden_layer_depth)])
             decoder_output, _ = self.model(self.decoder_inputs, h_0)
+            
         else:
             raise NotImplementedError
 

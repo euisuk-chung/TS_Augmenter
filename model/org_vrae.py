@@ -8,7 +8,6 @@ from torch.autograd import Variable
 import os
 
 
-
 class Encoder(nn.Module):
     """
     Encoder network containing enrolled LSTM/GRU
@@ -42,11 +41,7 @@ class Encoder(nn.Module):
         :param x: input to the encoder, of shape (sequence_length, batch_size, number_of_features)
         :return: last hidden state of encoder, of shape (batch_size, hidden_size)
         """
-        print('--------------------------')
-        print('DEBUGGING')
-        print(x.shape)
-        print('--------------------------')
-        
+
         _, (h_end, c_end) = self.model(x)
 
         h_end = h_end[-1, :, :]
@@ -307,10 +302,11 @@ class VRAE(BaseEstimator, nn.Module):
         for t, X in enumerate(train_loader):
 
             # Index first element of array to return tensor
-            X = X[0]
-
+            #X = X[0]
+            #print(X.shape)
             # required to swap axes, since dataloader gives output in (batch_size x seq_len x num_of_features)
             X = X.permute(1,0,2)
+            #print(X.shape)
 
             self.optimizer.zero_grad()
             loss, recon_loss, kl_loss, _ = self.compute_loss(X)
@@ -342,16 +338,9 @@ class VRAE(BaseEstimator, nn.Module):
 
         train_loader = DataLoader(dataset = dataset,
                                   batch_size = self.batch_size,
-                                  shuffle = True,
+                                  shuffle = False,
                                   drop_last=True)
-        
-        #########################
-        # debugging
-        print('fit result')
-        tmp = iter(train_loader).next()[0]
-        print(tmp.shape)
-        ###########################
-        
+
         for i in range(self.n_epochs):
             print('Epoch: %s' % i)
 
