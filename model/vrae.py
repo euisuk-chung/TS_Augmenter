@@ -5,6 +5,8 @@ from torch import distributions
 from sklearn.base import BaseEstimator
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
+
+from tqdm.auto import trange
 import os
 
 
@@ -324,7 +326,8 @@ class VRAE(BaseEstimator, nn.Module):
                                                                                     recon_loss.item(), kl_loss.item()))
 
         print('Average loss: {:.4f}'.format(epoch_loss / t))
-
+        
+        return epoch_loss / t
 
     def fit(self, dataset, save = False):
         """
@@ -339,16 +342,21 @@ class VRAE(BaseEstimator, nn.Module):
                                   batch_size = self.batch_size,
                                   shuffle = False,
                                   drop_last=True)
-
-        for i in range(self.n_epochs):
+        
+        loss_arr = []
+        
+        for i in trange(self.n_epochs):
             print('Epoch: %s' % i)
 
-            self._train(train_loader)
-
+            epoch_loss = self._train(train_loader)
+            loss_arr.append(epoch_loss)
+            
         self.is_fitted = True
+        
         if save:
             self.save('model.pth')
-
+        
+        return loss_arr
 
     def _batch_transform(self, x):
         """

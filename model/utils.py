@@ -1,49 +1,38 @@
 import os
 import numpy as np
-import glob
 import pandas as pd
+import pickle
 
 
-def load_data(folder, cols_to_remove = None):
+def load_gen_data(file_name, cols_to_remove = None):
     """
     folder: folder where data is located
     """
-    # define path
-    data_path = f'./{folder}/*.csv'
+    
+    # define path(must be in pkl file)
+    data_loc = f'./data/netis/{file_name}.pkl'    
     
     # get data
-    file_list = glob.glob(data_path)
-    file_list.sort()
+    with open(data_loc, 'rb') as f:
+        df = pickle.load(f)
     
-    # load dataset
-    df_total = pd.DataFrame()
-
-    for i in file_list:
-        data = pd.read_csv(i)
-        df_total = pd.concat([df_total, data])
-
-    # Sort by date
-    df_total = df_total.reset_index(drop = True)
-    df_total = df_total.drop(cols_to_remove, axis=1)
-    df_total = df_total.to_numpy()
+    # if needed remove columns that is not necessary
+    if cols_to_remove != None:
+        df = df_total.drop(cols_to_remove, axis=1)
     
-    return df_total
+    df = df.dropna()
+    
+    # TRAIN TEST SPLIT
+    # TRAIN
+    TRAIN_DF = df.query('Time < 20211103184400 or Time > 20211106084400 and label==0')
+    
+    # TEST(GET ONLY 정상)
+    TEST_DF = df.query('Time >= 20211103184400 and Time <= 20211106084400 and label==0')
 
-# TODO : Delete function
-def open_data(direc, ratio_train=0.8, dataset="ECG5000"):
-    """Input:
-    direc: location of the UCR archive
-    ratio_train: ratio to split training and testset
-    dataset: name of the dataset in the UCR archive"""
-    datadir = direc + '/' + dataset + '/' + dataset
-    data_train = np.loadtxt(datadir + '_TRAIN', delimiter=',')
-    data_test_val = np.loadtxt(datadir + '_TEST', delimiter=',')[:-1]
-    data = np.concatenate((data_train, data_test_val), axis=0)
-    data = np.expand_dims(data, -1)
-
-    N, D, _ = data.shape
-
-    ind_cut = int(ratio_train * N)
-    ind = np.random.permutation(N)
-    return data[ind[:ind_cut], 1:, :], data[ind[ind_cut:], 1:, :], data[ind[:ind_cut], 0, :], data[ind[ind_cut:], 0, :]
-
+    TOTAL_DF = df.to_numpy()
+    
+    # REMOVE TIME & LABEL
+    TRAIN_DF = TRAIN_DF.iloc[:,1:-1].to_numpy()
+    TEST_DF = TEST_DF.iloc[:,1:-1].to_numpy()
+    
+    return TOTAL_DF, TRAIN_DF, TEST_DF
