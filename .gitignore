@@ -1,6 +1,7 @@
 ### Data ###
 data/
 erc/
+plots/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
