@@ -3,8 +3,25 @@ import numpy as np
 import pandas as pd
 import pickle
 
+import random
+import torch
+import numpy as np
 
-def load_gen_data(file_name, cols_to_remove = None):
+from einops import rearrange
+import torch.nn as nn
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+
+
+
+def fix_seed(seed: int) -> None:
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+
+
+def load_data(file_name, scale_type = 'Standard', cols_to_remove = None):
     """
     folder: folder where data is located
     """
@@ -32,7 +49,57 @@ def load_gen_data(file_name, cols_to_remove = None):
     TOTAL_DF = df.to_numpy()
     
     # REMOVE TIME & LABEL
-    TRAIN_DF = TRAIN_DF.iloc[:,1:-1].to_numpy()
+    TRAIN_DF = TRAIN_DF.iloc[:,1:-1]
+    cols = TRAIN_DF.columns
+    TRAIN_DF = TRAIN_DF.to_numpy()
     TEST_DF = TEST_DF.iloc[:,1:-1].to_numpy()
     
-    return TOTAL_DF, TRAIN_DF, TEST_DF
+    if scale_type == 'MinMax':
+        scaler = MinMaxScaler()
+    elif scale_type == 'Standard':
+        scaler = StandardScaler()
+    else:
+        pass
+    
+    TRAIN_SCALED = scaler.fit(TRAIN_DF).transform(TRAIN_DF)
+    TEST_SCALED = scaler.transform(TEST_DF)
+    
+    return TRAIN_DF, TEST_DF, TRAIN_SCALED, TEST_SCALED, cols, scaler
+
+def concat_recon(recon_output):
+    
+    w,b,f = recon_output.shape
+    tmp = rearrange(recon_output, 'w b f -> b w f')
+    output = tmp.reshape(w*b,f)
+
+    return output
+
+def eval_recon(recon, real, scaler = None, undo = False):
+    criterion = nn.MSELoss()
+    
+    if undo == True:
+        assert scaler != None, 'Scaler should be defined!!'
+        
+        # reverse scaling
+        recon = scaler.inverse_transform(recon)
+    
+    r = recon.shape[0]
+    real = real[:r,:]
+
+    # compute loss
+    eval_loss = criterion(torch.tensor(recon), torch.tensor(real))
+    
+    return eval_loss
+
+def get_diff(recon, real, scaler = None, undo = False):
+    
+    if undo == True:
+        assert scaler != None, 'Scaler should be defined!!'
+        
+        # reverse scaling
+        recon = scaler.inverse_transform(recon)
+    
+    r = recon.shape[0]
+    real = real[:r,:]
+    
+    return np.abs(recon-real)

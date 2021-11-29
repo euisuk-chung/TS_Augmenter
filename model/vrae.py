@@ -1,13 +1,15 @@
-import numpy as np
+import os
+import sys
+
 import torch
 from torch import nn, optim
 from torch import distributions
-from sklearn.base import BaseEstimator
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 
+import numpy as np
 from tqdm.auto import trange
-import os
+from sklearn.base import BaseEstimator
 
 
 class Encoder(nn.Module):
@@ -151,7 +153,7 @@ def _assert_no_grad(tensor):
         "mark these tensors as not requiring gradients"
 
 class VRAE(BaseEstimator, nn.Module):
-    """Variational recurrent auto-encoder. This module is used for dimensionality reduction of timeseries
+    """Variational recurrent auto-encoder.
 
     :param sequence_length: length of the input sequence
     :param number_of_features: number of input features
@@ -171,9 +173,10 @@ class VRAE(BaseEstimator, nn.Module):
     :param max_grad_norm: The grad-norm to be clipped
     :param dload: Download directory where models are to be dumped
     """
-    def __init__(self, sequence_length, number_of_features, hidden_size=90, hidden_layer_depth=2, latent_length=20,
-                 batch_size=32, learning_rate=0.005, block='LSTM',
-                 n_epochs=5, dropout_rate=0., optimizer='Adam', loss='MSELoss',
+    def __init__(self, sequence_length, number_of_features, hidden_size=90,\
+                 hidden_layer_depth=2, latent_length=20,\
+                 batch_size=32, learning_rate=0.005, block='LSTM',\
+                 n_epochs=5, dropout_rate=0., optimizer='Adam', loss='MSELoss',\
                  cuda=False, print_every=100, clip=True, max_grad_norm=5, dload='.'):
 
         super(VRAE, self).__init__()

@@ -1,7 +1,9 @@
 ### Data ###
 data/
-erc/
+etc/
 plots/
+result/
+save_model/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
