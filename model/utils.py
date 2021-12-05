@@ -9,8 +9,7 @@ import numpy as np
 
 from einops import rearrange
 import torch.nn as nn
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler
 
 
 def fix_seed(seed: int) -> None:
@@ -58,6 +57,8 @@ def load_data(file_name, scale_type = 'Standard', cols_to_remove = None):
         scaler = MinMaxScaler()
     elif scale_type == 'Standard':
         scaler = StandardScaler()
+    elif scale_type == 'Robust':
+        scaler = RobustScaler()    
     else:
         pass
     

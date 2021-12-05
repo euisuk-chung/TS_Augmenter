@@ -19,6 +19,17 @@ def parser_setting(parser):
     Set arguments
     '''
     
+    parser.add_argument(
+        '--scale_type',
+        choices=['Standard', 'MinMax', 'Robust'],
+        default='MinMax',
+        type=str)
+    
+    parser.add_argument(
+        "--undo",
+        type=str2bool,
+        default=False)
+    
     # Model Arguments
     parser.add_argument(
         '--sequence_length',
