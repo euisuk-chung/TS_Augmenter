@@ -24,9 +24,9 @@ from scipy.stats import mode
 from tqdm.auto import trange
 from scipy.stats import norm
 
-from model.TimeGAN import TimeGAN
-from model.custom_dataset import *
-from model.utils_timegan import *
+from models.TimeGAN import TimeGAN
+from utils.custom_dataset import *
+from utils.utils_timegan import *
 
 args = config.get_config() # argument 호출
 fix_seed(args.seed) # seed 고정

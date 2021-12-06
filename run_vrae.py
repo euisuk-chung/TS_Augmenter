@@ -24,9 +24,9 @@ from scipy.stats import mode
 from tqdm.auto import trange
 from scipy.stats import norm
 
-from model.vrae import VRAE
-from model.custom_dataset import *
-from model.utils_vrae import *
+from models.vrae import VRAE
+from utils.custom_dataset import *
+from utils.utils_vrae import *
 
 # argument 호출
 args = config.get_config() 
