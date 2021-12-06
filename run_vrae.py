@@ -99,13 +99,13 @@ if args.is_generate_train:
     
     # save original data
     train_org = pd.DataFrame(TRAIN_DF if args.undo == True else TRAIN_SCALED, columns= cols)
-    train_org.to_csv(f'./vae_gen_data/train/original_{args.scale_type}_un_{args.undo}.csv')
-    print('>> SAVED TRAIN ORIGINAL Data!! (Loc: vae_gen_data)')
+    train_org.to_csv(f'./gen_data_vae/train/original_{args.scale_type}_un_{args.undo}.csv')
+    print('>> SAVED TRAIN ORIGINAL Data!! (Loc: gen_data_vae)')
     
     # save reconstructed data
     train_gen = pd.DataFrame(train_recon, columns= cols)
-    train_gen.to_csv(f'./vae_gen_data/train/VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}.csv')
-    print('>> SAVED TRAIN RECONSTRUCTED Data!! (Loc: vae_gen_data)')
+    train_gen.to_csv(f'./gen_data_vae/train/VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}.csv')
+    print('>> SAVED TRAIN RECONSTRUCTED Data!! (Loc: gen_data_vae)')
     
 # TEST dataset reconstruction
 if args.is_generate_test:
@@ -132,13 +132,13 @@ if args.is_generate_test:
     
     # save original data
     test_org = pd.DataFrame(TRAIN_DF if args.undo == True else TRAIN_SCALED, columns= cols)
-    test_org.to_csv(f'./vae_gen_data/test/original_{args.scale_type}_un_{args.undo}.csv')
-    print('>> SAVED TEST ORIGINAL Data!! (Loc: vae_gen_data)')
+    test_org.to_csv(f'./gen_data_vae/test/original_{args.scale_type}_un_{args.undo}.csv')
+    print('>> SAVED TEST ORIGINAL Data!! (Loc: gen_data_vae)')
     
     # save reconstructed data
     test_gen = pd.DataFrame(test_recon, columns= cols)
-    test_gen.to_csv(f'./vae_gen_data/test/VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}.csv')
-    print('>> SAVED TEST RECONSTRUCTED Data!! (Loc: vae_gen_data)')
+    test_gen.to_csv(f'./gen_data_vae/test/VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}.csv')
+    print('>> SAVED TEST RECONSTRUCTED Data!! (Loc: gen_data_vae)')
 
 # IF Both TRAIN and TEST data reconstruction is conducted
 if args.is_generate_train and args.is_generate_test:

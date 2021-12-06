@@ -63,7 +63,8 @@ if args.is_train:
     print('>>>> TRAINING COMPLETE!')
 if args.is_generate:
     gen_data=timegan_generator(model, args.num_generation, args)
-    np.save(f'./gan_gen_data/gen_data',gen_data)
+    np.save(f'./gen_data_gan/gen_data',gen_data)
+    print('>>>> GENERATION COMPLETE!')
 
 
 
