@@ -11,7 +11,7 @@ For example :
 ## Model Used
 ### TimeGAN
 
-<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/TimeGAN_architecture.PNG?raw=true' width="600" height="400">
+<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/TimeGAN_architecture.PNG?raw=true' width="650" height="400">
 
 - 코드 작성자 : 박경찬
 - pyTorch implementation for `TimeGAN`
@@ -19,7 +19,7 @@ For example :
 
 ### Variational Recurrent AutoEncoder (VRAE)
 
-<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/LSTM_VAE_architecture.png?raw=true' width="600" height="400">
+<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/LSTM_VAE_architecture.png?raw=true' width="650" height="400">
 
 - 코드 작성자 : 정의석
 - pyTorch implementation for `VRAE`
