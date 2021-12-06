@@ -23,7 +23,7 @@ python run_vrae.py
 
 # Model Explanation
 ## TimeGAN
-<img src = 'link'>
+<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/TimeGAN_architecture.PNG?raw=true'>
 
 ## VRAE
-<img src = 'link'>
+<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/LSTM_VAE_architecture.png?raw=true'>
