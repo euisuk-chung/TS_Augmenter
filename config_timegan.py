@@ -77,15 +77,15 @@ def parser_setting(parser):
     # Model Arguments
     parser.add_argument(
         '--emb_epochs',
-        default=300,
+        default=1000,
         type=int)
     parser.add_argument(
         '--sup_epochs',
-        default=300,
+        default=1000,
         type=int)
     parser.add_argument(
         '--gan_epochs',
-        default=300,
+        default=1000,
         type=int)
     parser.add_argument(
         '--batch_size',

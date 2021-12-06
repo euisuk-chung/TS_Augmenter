@@ -86,7 +86,7 @@ def parser_setting(parser):
         type=int)
     parser.add_argument(
         '--n_epochs',
-        default=500,
+        default=1000,
         type=int)
     parser.add_argument(
         '--batch_size',

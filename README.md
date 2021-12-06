@@ -13,12 +13,17 @@ For example :
 
 ```python
 python run_timegan.py
-
 ```
 
 2. VRAE를 이용한 시계열 생성
 
 ```python
 python run_vrae.py
-
 ```
+
+# Model Explanation
+## TimeGAN
+<img src = 'link'>
+
+## VRAE
+<img src = 'link'>
