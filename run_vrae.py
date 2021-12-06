@@ -71,6 +71,8 @@ if args.is_train:
     print('>>>> TRAINING COMPLETE!')
 
     print('SAVING TRAINED MODEL...')
+    
+    # save model
     vrae.save(f'VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}.pth')
     print(f'>>>> model saved as "VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}"')
 

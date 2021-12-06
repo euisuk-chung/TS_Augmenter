@@ -1,22 +1,14 @@
-#!/bin/sh
+# MODEL RUN
+# TRAIN on diff scalers, and layers
 
-BATCH_SIZE=8
-EPOCH=10
-LR=5e-5
-ACCUMULATION_STEP=1
+# Standard
+python run_vrae.py --scale_type 'Standard' --hidden_layer_depth 1
+python run_vrae.py --scale_type 'Standard' --hidden_layer_depth 2
 
-# N_ENC=6
-# N_DEC=6
+# MinMax
+python run_vrae.py --scale_type 'MinMax' --hidden_layer_depth 1
+python run_vrae.py --scale_type 'MinMax' --hidden_layer_depth 2
 
-# run distilBART-6-3
-python ./src/kobart/main.py\
-    --batch-size=${BATCH_SIZE}\
-    --lr=${LR}\
-    --epoch=${EPOCH}\
-    --gradient-accumulation-step=${ACCUMULATION_STEP}\
-    --amp\
-    --distributed
-#     --distill\
-    # --n_enc=${N_ENC}\
-    # --n_dec=${N_DEC}\
-    
+# Robust
+python run_vrae.py --scale_type 'Robust' --hidden_layer_depth 1
+python run_vrae.py --scale_type 'Robust' --hidden_layer_depth 2
