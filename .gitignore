@@ -3,7 +3,8 @@ data/
 etc/
 result/
 save_model/
-gen_data/
+vae_gen_data/
+gan_gen_data/
 tensorboard/
 
 ### Notebook ###
