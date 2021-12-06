@@ -2,26 +2,28 @@ import os
 import pickle
 from typing import Dict, Union
 
-# 3rd party modules
 import numpy as np
 from tqdm import tqdm, trange
 
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-# Self-written modules
-
+# timeGAN embedding_trainer
 def embedding_trainer(
-        model: torch.nn.Module,
-        dataloader: torch.utils.data.DataLoader,
-        e_opt: torch.optim.Optimizer,
-        r_opt: torch.optim.Optimizer,
-        args: Dict,
-        writer: Union[torch.utils.tensorboard.SummaryWriter, type(None)] = None
+    model: torch.nn.Module,
+    dataloader: torch.utils.data.DataLoader,
+    e_opt: torch.optim.Optimizer,
+    r_opt: torch.optim.Optimizer,
+    args: Dict,
+    writer: Union[torch.utils.tensorboard.SummaryWriter, type(None)] = None
 ) -> None:
-    """The training loop for the embedding and recovery functions
+    
     """
+    The training loop for the embedding and recovery functions
+    """
+    
     logger = trange(args.emb_epochs, desc=f"Epoch: 0, Loss: 0")
+    
     for epoch in logger:
         for X_mb in dataloader:
             # Reset gradients
@@ -48,7 +50,7 @@ def embedding_trainer(
             )
             writer.flush()
 
-
+# timeGAN supervisor_trainer
 def supervisor_trainer(
         model: torch.nn.Module,
         dataloader: torch.utils.data.DataLoader,
@@ -85,7 +87,7 @@ def supervisor_trainer(
             )
             writer.flush()
 
-
+# timeGAN joint_trainer
 def joint_trainer(
         model: torch.nn.Module,
         dataloader: torch.utils.data.DataLoader,
@@ -109,7 +111,7 @@ def joint_trainer(
             ## Generator Training
             for _ in range(2):
                 # Random Generator
-                Z_mb = torch.rand((args.batch_size, args.max_seq_len, args.Z_dim))
+                Z_mb = torch.rand((args.batch_size, args.window_size, args.Z_dim))
 
                 # Forward Pass (Generator)
                 model.zero_grad()
@@ -132,7 +134,7 @@ def joint_trainer(
                 r_opt.step()
 
             # Random Generator
-            Z_mb = torch.rand((args.batch_size, args.max_seq_len, args.Z_dim))
+            Z_mb = torch.rand((args.batch_size, args.window_size, args.Z_dim))
 
             ## Discriminator Training
             model.zero_grad()
@@ -169,7 +171,7 @@ def joint_trainer(
             )
             writer.flush()
 
-
+# timeGAN trainer
 def timegan_trainer(model, dataset, args):
     """The training procedure for TimeGAN
     Args:
@@ -232,11 +234,12 @@ def timegan_trainer(model, dataset, args):
     )
 
     # Save model, args, and hyperparameters
+    print('SAVING TRAINED MODEL...')
     torch.save(args, f"{args.model_path}/args.pickle")
     torch.save(model.state_dict(), f"{args.model_path}/model.pt")
     print(f"\nSaved at path: {args.model_path}")
-
-
+    
+# timeGAN generator
 def timegan_generator(model, Num, args):
     """The inference procedure for TimeGAN
     Args:
@@ -262,7 +265,7 @@ def timegan_generator(model, Num, args):
     model.eval()
     with torch.no_grad():
         # Generate fake data
-        Z = torch.rand((Num, args.max_seq_len, args.Z_dim))
+        Z = torch.rand((Num, args.window_size, args.Z_dim))
 
         generated_data = model(X=None, Z=Z, obj="inference")
 

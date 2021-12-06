@@ -1,8 +1,10 @@
-"""Set configuration for the module
-"""
 import argparse
 import multiprocessing
 import torch
+
+"""
+Set configuration for the module
+"""
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -15,8 +17,39 @@ def str2bool(v):
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
 def parser_setting(parser):
-    """Set arguments
-    """
+    '''
+    Set arguments
+    '''
+    # for loading data
+    parser.add_argument(
+        '--scale_type',
+        choices=['Standard', 'MinMax', 'Robust'],
+        default='MinMax',
+        type=str)
+    parser.add_argument(
+        '--file_name',
+        default='netis',
+        type=str)
+    
+    # train/generate argument
+    parser.add_argument(
+        "--is_train",
+        type=str2bool,
+        default=True)
+    parser.add_argument(
+        "--is_generate",
+        type=str2bool,
+        default=True)
+    parser.add_argument(
+        "--undo",
+        type=str2bool,
+        default=False)
+    parser.add_argument(
+        '--num_generation',
+        default=1000,
+        type=int)
+    
+    # etc
     parser.add_argument(
         '--device',
         choices=['cuda', 'cpu'],
@@ -26,10 +59,6 @@ def parser_setting(parser):
         '--exp',
         default='test',
         type=str)
-    parser.add_argument(
-        "--is_train",
-        type=str2bool,
-        default=True)
     parser.add_argument(
         '--seed',
         default=0,
@@ -41,34 +70,30 @@ def parser_setting(parser):
 
     # Data Arguments
     parser.add_argument(
-        '--max_seq_len',
-        default=100,
+        '--window_size',
+        default=30,
         type=int)
-    parser.add_argument(
-        '--train_rate',
-        default=0.5,
-        type=float)
 
     # Model Arguments
     parser.add_argument(
         '--emb_epochs',
-        default=1000,
+        default=300,
         type=int)
     parser.add_argument(
         '--sup_epochs',
-        default=1000,
+        default=300,
         type=int)
     parser.add_argument(
         '--gan_epochs',
-        default=1000,
+        default=300,
         type=int)
     parser.add_argument(
         '--batch_size',
-        default=512,
+        default=256,
         type=int)
     parser.add_argument(
         '--hidden_dim',
-        default=20,
+        default=200,
         type=int)
     parser.add_argument(
         '--num_layers',
@@ -87,7 +112,10 @@ def parser_setting(parser):
         '--learning_rate',
         default=1e-3,
         type=float)
-
+    parser.add_argument(
+        '--model_path',
+        default="save_model",
+        type=str)
     return parser
 
 def get_config():

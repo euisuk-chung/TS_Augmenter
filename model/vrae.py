@@ -488,12 +488,13 @@ class VRAE(BaseEstimator, nn.Module):
             os.mkdir(self.dload)
         torch.save(self.state_dict(), PATH)
 
-    def load(self, PATH):
+    def load(self, file_name):
         """
         Loads the model's parameters from the path mentioned
 
-        :param PATH: Should contain pickle file
+        :param file_name: the filename to be saved as,`dload` serves as the download directory
         :return: None
         """
+        PATH = self.dload + '/' + file_name
         self.is_fitted = True
         self.load_state_dict(torch.load(PATH))

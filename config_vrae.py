@@ -1,8 +1,10 @@
-"""Set configuration for the module
-"""
 import argparse
 import multiprocessing
 import torch
+
+"""
+Set configuration for the module
+"""
 
 def str2bool(v):
     if isinstance(v, bool):
@@ -18,102 +20,117 @@ def parser_setting(parser):
     '''
     Set arguments
     '''
-    
+    # for loading data
     parser.add_argument(
         '--scale_type',
         choices=['Standard', 'MinMax', 'Robust'],
         default='MinMax',
         type=str)
+    parser.add_argument(
+        '--file_name',
+        default='netis',
+        type=str)    
     
+    # train/generate argument
+    parser.add_argument(
+        "--is_train",
+        type=str2bool,
+        default=True)
+    parser.add_argument(
+        "--is_generate_train",
+        type=str2bool,
+        default=True)
+    parser.add_argument(
+        "--is_generate_test",
+        type=str2bool,
+        default=True)
+    
+    # rescaling argument
     parser.add_argument(
         "--undo",
         type=str2bool,
         default=False)
+    
+    # etc
+    parser.add_argument(
+        '--seed',
+        default=0,
+        type=int)
+    
+    # Data Arguments
+    parser.add_argument(
+        '--window_size',
+        default=30,
+        type=int)
     
     # Model Arguments
     parser.add_argument(
         '--sequence_length',
         default=30,
         type=int)
-    
     parser.add_argument(
         '--number_of_features',
         default=92,
         type=int)
-
     parser.add_argument(
         '--hidden_size',
-        default=90,
+        default=184,
         type=int)
-    
     parser.add_argument(
         '--hidden_layer_depth',
         default=1,
         type=int)
-    
     parser.add_argument(
         '--latent_length',
         default=30,
         type=int)
-    
     parser.add_argument(
         '--n_epochs',
-        default=1000,
+        default=500,
         type=int)
-    
     parser.add_argument(
         '--batch_size',
         default=64,
         type=int)
-    
     parser.add_argument(
         '--learning_rate',
         default=1e-4,
         type=float)
-    
     parser.add_argument(
         '--dropout_rate',
         default=0.2,
         type=float)
-    
     parser.add_argument(
         '--optimizer',
         choices=['Adam'],
         default='Adam',
         type=str)
-    
     parser.add_argument(
         "--cuda",
         type=str2bool,
         default=True)
-    
     parser.add_argument(
         '--print_every',
         default=50,
         type=int)
-    
     parser.add_argument(
         "--clip",
         type=str2bool,
         default=True)
-    
     parser.add_argument(
         '--max_grad_norm',
         default=5,
         type=int)
-    
     parser.add_argument(
         '--loss',
         choices=['SmoothL1Loss', 'MSELoss'],
         default='MSELoss',
         type=str)
-    
     parser.add_argument(
         '--block',
         choices=['LSTM', 'GRU'],
         default='LSTM',
         type=str)
-    
     parser.add_argument(
         '--dload',
         default='./saved_model',

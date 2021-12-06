@@ -9,7 +9,7 @@ class EmbeddingNetwork(torch.nn.Module):
         self.feature_dim = args.feature_dim
         self.hidden_dim = args.hidden_dim
         self.num_layers = args.num_layers
-        self.max_seq_len = args.max_seq_len
+        self.max_seq_len = args.window_size
 
         # Embedder Architecture
         self.emb_rnn = torch.nn.GRU(
@@ -60,7 +60,7 @@ class RecoveryNetwork(torch.nn.Module):
         self.hidden_dim = args.hidden_dim
         self.feature_dim = args.feature_dim
         self.num_layers = args.num_layers
-        self.max_seq_len = args.max_seq_len
+        self.max_seq_len = args.window_size
 
         # Recovery Architecture
         self.rec_rnn = torch.nn.GRU(
@@ -107,7 +107,7 @@ class SupervisorNetwork(torch.nn.Module):
         super(SupervisorNetwork, self).__init__()
         self.hidden_dim = args.hidden_dim
         self.num_layers = args.num_layers
-        self.max_seq_len = args.max_seq_len
+        self.max_seq_len = args.window_size
 
         # Supervisor Architecture
         self.sup_rnn = torch.nn.GRU(
@@ -158,7 +158,7 @@ class GeneratorNetwork(torch.nn.Module):
         self.Z_dim = args.Z_dim
         self.hidden_dim = args.hidden_dim
         self.num_layers = args.num_layers
-        self.max_seq_len = args.max_seq_len
+        self.max_seq_len = args.window_size
 
         # Generator Architecture
         self.gen_rnn = torch.nn.GRU(
@@ -208,7 +208,7 @@ class DiscriminatorNetwork(torch.nn.Module):
         super(DiscriminatorNetwork, self).__init__()
         self.hidden_dim = args.hidden_dim
         self.num_layers = args.num_layers
-        self.max_seq_len = args.max_seq_len
+        self.max_seq_len = args.window_size
 
         # Discriminator Architecture
         self.dis_rnn = torch.nn.GRU(
@@ -261,7 +261,7 @@ class TimeGAN(torch.nn.Module):
         self.feature_dim = args.feature_dim
         self.Z_dim = args.Z_dim
         self.hidden_dim = args.hidden_dim
-        self.max_seq_len = args.max_seq_len
+        self.max_seq_len = args.window_size
         self.batch_size = args.batch_size
 
         self.embedder = EmbeddingNetwork(args)
