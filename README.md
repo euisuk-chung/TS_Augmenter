@@ -12,14 +12,18 @@ For example :
 
 ## Model Used
 ### TimeGAN
-코드 작성자 : 박경찬
-Code Reference : https://github.com/d9n13lt4n/timegan-pytorch
+
 <img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/TimeGAN_architecture.PNG?raw=true'>
 
-### VRAE
-코드 작성자 : 정의석
-Code Reference : https://github.com/tejaslodaya/timeseries-clustering-vae
+- 코드 작성자 : 박경찬
+- Code Reference : https://github.com/d9n13lt4n/timegan-pytorch
+
+### Variational Recurrent AutoEncoder (VRAE)
+
 <img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/LSTM_VAE_architecture.png?raw=true'>
+
+- 코드 작성자 : 정의석
+- Code Reference : https://github.com/tejaslodaya/timeseries-clustering-vae
 
 ---
 
