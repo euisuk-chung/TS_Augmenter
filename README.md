@@ -51,7 +51,7 @@ However, the generation method for each model are different! See below for more 
 
 ### TimeGAN
 TimeGAN has 2 Modes, which is used to decide whether to train or generate :
-1. is_train (default = True) : train model with loaded train data
+1. is_train (default = True) : train model with loaded train data (window_size=30, stride=1)
 2. is_generate (default = True) : generate multiple(num_generation) sequences of window_size(30)
 
 ```
@@ -66,7 +66,7 @@ TimeGAN has 2 Modes, which is used to decide whether to train or generate :
 
 ### Variational Recurrent AutoEncoder (VRAE)
 VRAE has 3 Modes, which is used to decide whether to train or generate(train) or generate(test) :
-1. is_train (default = True) : train model with loaded train data
+1. is_train (default = True) : train model with loaded train data (window_size=30, stride=1)
 2. is_generate_train (default = True) : generate train dataset loaded sequentially(window_size=stride)
 3. is_generate_test (default = True) : generate test dataset loaded sequentially(window_size=stride)
 
