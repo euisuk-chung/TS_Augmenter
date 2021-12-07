@@ -8,7 +8,7 @@ gen_data_gan/
 tensorboard/
 
 ### Notebook ###
-
+*.ipynb
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
