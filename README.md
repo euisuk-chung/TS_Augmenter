@@ -23,6 +23,7 @@ python run_timegan.py
 python run_vrae.py
 
 ```
+
 ## Models Used
 ### TimeGAN
 
@@ -41,8 +42,42 @@ python run_vrae.py
 - Code Reference : https://github.com/tejaslodaya/timeseries-clustering-vae
 
 ## CAUTIONS!
-The outputs for each model are different! See below for more detail.
+
+Training method for each model are the same, which uses dataset that is loaded by moving sliding window(default=30) with certain stride(default=1).
+
+<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/train_test_image.png?raw=true' width="650" height="400">
+
+However, the generation method for each model are different! See below for more detail.
 
 ### TimeGAN
+TimeGAN has 2 Modes, which is used to decide whether to train or generate :
+1. is_train (default = True) : train model with loaded train data
+2. is_generate (default = True) : generate multiple(num_generation) sequences of window_size(30)
+
+```
+# Mode 1 : Train mode
+--is_train # train timeGAN
+
+# Mode 2 : Generation mode
+--is_generate # generate window size sequences
+--num_generation # number of sequences to make
+
+```
 
 ### Variational Recurrent AutoEncoder (VRAE)
+VRAE has 3 Modes, which is used to decide whether to train or generate(train) or generate(test) :
+1. is_train (default = True) : train model with loaded train data
+2. is_generate_train (default = True) : generate train dataset loaded sequentially(window_size=stride)
+3. is_generate_test (default = True) : generate test dataset loaded sequentially(window_size=stride)
+
+```
+# Mode 1 : Train mode
+--is_train # train VRAE
+
+# Mode 2 : Generation mode
+--is_generate_train # generate train dataset
+
+# Mode 3 : 
+--is_generate_test # generate test dataset
+
+```
