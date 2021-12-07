@@ -95,19 +95,36 @@ if args.is_generate_train:
     train_recon = vrae.reconstruct(train_gen_dataset)
     train_recon = concat_recon(train_recon)
     
+    # original train data
+    for window_num in range(len(train_gen_dataset)):
+        if window_num == 0:
+            # intialize train_org
+            train_org = train_gen_dataset[window_num]
+        else:
+            # get curr window
+            tmp_window = train_gen_dataset[window_num]
+            # concat next window
+            train_org = np.concatenate((train_org, tmp_window), axis=0)
+    
     # get loss
-    train_loss = eval_recon(recon = train_recon, real = TRAIN_DF if args.undo == True else TRAIN_SCALED, scaler = scaler, undo = args.undo)
+    # TODO : update unscaled version
+    train_loss = eval_recon(recon = train_recon, real = train_org, scaler = scaler, undo = args.undo)
     print(f'>> TRAIN RECONSTRUCTION LOSS : {train_loss}')
     
     # save original data
-    train_org = pd.DataFrame(TRAIN_DF if args.undo == True else TRAIN_SCALED, columns= cols)
-    train_org.to_csv(f'./gen_data_vae/train/original_{args.scale_type}_un_{args.undo}.csv')
+    train_org = pd.DataFrame(train_org, columns= cols)
+    # train_org = pd.DataFrame(TRAIN_DF if args.undo == True else TRAIN_SCALED, columns= cols)
+    train_org.to_csv(f'./gen_data_vae/train/original_{args.scale_type}_un_{args.undo}.csv', index=False)
     print('>> SAVED TRAIN ORIGINAL Data!! (Loc: gen_data_vae)')
     
     # save reconstructed data
     train_gen = pd.DataFrame(train_recon, columns= cols)
-    train_gen.to_csv(f'./gen_data_vae/train/VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}.csv')
+    train_gen.to_csv(f'./gen_data_vae/train/VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}.csv', index=False)
     print('>> SAVED TRAIN RECONSTRUCTED Data!! (Loc: gen_data_vae)')
+    
+#     print(f'TRAIN ORG SHAPE : {train_org.shape}')
+#     print(f'TRAIN GEN SHAPE : {train_gen.shape}')
+#     print(f'SHAPE COMPARE : {train_org.shape==train_gen.shape}')
     
 # TEST dataset reconstruction
 if args.is_generate_test:
@@ -128,22 +145,40 @@ if args.is_generate_test:
     test_recon = vrae.reconstruct(test_gen_dataset)
     test_recon = concat_recon(test_recon)
 
+    # original test data
+    for window_num in range(len(test_gen_dataset)):
+        if window_num == 0:
+            # intialize train_org
+            test_org = test_gen_dataset[window_num]
+        else:
+            # get curr window
+            tmp_window = test_gen_dataset[window_num]
+            # concat next window
+            test_org = np.concatenate((test_org, tmp_window), axis=0)
+            
     # get loss
-    test_loss = eval_recon(recon = test_recon, real = TEST_DF if args.undo == True else TEST_SCALED, scaler = scaler, undo = args.undo)
+    # TODO : update unscaled version
+    test_loss = eval_recon(recon = test_recon, real = test_org, scaler = scaler, undo = args.undo)
     print(f'>> TEST RECONSTRUCTION LOSS : {test_loss}')
     
     # save original data
-    test_org = pd.DataFrame(TRAIN_DF if args.undo == True else TRAIN_SCALED, columns= cols)
-    test_org.to_csv(f'./gen_data_vae/test/original_{args.scale_type}_un_{args.undo}.csv')
+    test_org = pd.DataFrame(test_org, columns= cols)
+    # test_org = pd.DataFrame(TRAIN_DF if args.undo == True else TRAIN_SCALED, columns= cols)
+    test_org.to_csv(f'./gen_data_vae/test/original_{args.scale_type}_un_{args.undo}.csv', index=False)
     print('>> SAVED TEST ORIGINAL Data!! (Loc: gen_data_vae)')
     
     # save reconstructed data
     test_gen = pd.DataFrame(test_recon, columns= cols)
-    test_gen.to_csv(f'./gen_data_vae/test/VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}.csv')
+    test_gen.to_csv(f'./gen_data_vae/test/VRAE_{args.scale_type}_un_{args.undo}_hidden_{args.hidden_layer_depth}_win_{args.sequence_length}_ep_{args.n_epochs}.csv', index=False)
     print('>> SAVED TEST RECONSTRUCTED Data!! (Loc: gen_data_vae)')
+    
+#     print(f'TEST ORG SHAPE : {test_org.shape}')
+#     print(f'TEST GEN SHAPE : {test_gen.shape}')
+#     print(f'SHAPE COMPARE : {test_org.shape==test_gen.shape}')
 
-# IF Both TRAIN and TEST data reconstruction is conducted
-if args.is_generate_train and args.is_generate_test:
+# If we train and test at the same time
+# to get train/test diff and loss history
+if args.is_train and args.is_generate_train and args.is_generate_test:
 
     # train recon diff
     train_diff = pd.DataFrame(get_diff(recon = train_recon, real = TRAIN_DF if args.undo == True else TRAIN_SCALED, scaler = scaler, undo = args.undo), columns= cols)
