@@ -74,10 +74,10 @@ VRAE has 3 Modes, which is used to decide whether to train or generate(train) or
 # Mode 1 : Train mode
 --is_train # train VRAE
 
-# Mode 2 : Generation mode
+# Mode 2 : Train Generation mode
 --is_generate_train # generate train dataset
 
-# Mode 3 : 
+# Mode 3 : Test Generation mode
 --is_generate_test # generate test dataset
 
 ```
