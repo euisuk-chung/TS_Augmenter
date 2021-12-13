@@ -20,43 +20,50 @@ def fix_seed(seed: int) -> None:
     random.seed(seed)
 
 # load generation data
-def load_gen_data(file_name, scale_type = 'Standard', cols_to_remove = None):
+def load_gen_data(file_name, scale_type = 'MinMax',\
+                  cols_to_remove = ['Time'], split = False):
     """
     file_name: file_name in data location
+    scale_type : choose scaling type
     """
     
-    # define path(must be in pkl file)
-    data_loc = f'./data/netis/{file_name}.pkl'    
+    # define path(must be uder data folder and in pkl file)
+    data_loc = f'./data/{file_name}.pkl'    
     
     # get data
     with open(data_loc, 'rb') as f:
         df = pickle.load(f)
     
-    # if needed remove columns that is not necessary
-    if cols_to_remove != None:
-        df = df_total.drop(cols_to_remove, axis=1)
-    
+    # 결측치 제거
     df = df.dropna()
     
-    # TRAIN TEST SPLIT
-    # TRAIN
-    TRAIN_DF = df.query('Time < 20211103184400 or Time > 20211106084400 and label==0')
-    
-    # TEST(GET ONLY 정상)
-    TEST_DF = df.query('Time >= 20211103184400 and Time <= 20211106084400 and label==0')
-
-    TOTAL_DF = df.to_numpy()
-    
-    # REMOVE TIME & LABEL
+    # TRAIN/TEST SPLIT 없으면 전체 데이터 사용
+    if split == True :
+        # Netis 데이터 기준으로 작성되어 있기때문에 도메인에 맞도록 Train/Test Split을 진행함
+        TOTAL_DF = df
+        TRAIN_DF = df.query('Time < 20211103184400 or Time > 20211106084400 and label==0')
+        TEST_DF = df.query('Time >= 20211103184400 and Time <= 20211106084400 and label==0')
+    else:
+        TOTAL_DF = df
+        TRAIN_DF = df
+        TEST_DF = df
+        
+    # 시간 정보 저장
     TRAIN_Time = TRAIN_DF['Time']
     TEST_Time = TEST_DF['Time']
     
-    # remove time & label
-    TRAIN_DF = TRAIN_DF.iloc[:,1:-1]
-    TEST_DF = TEST_DF.iloc[:,1:-1]
+    # if needed remove columns that is not necessary
+    # 지정 변수 제거
+    if cols_to_remove != None:
+        TOTAL_DF = TOTAL_DF.drop(cols_to_remove, axis=1)
+        TRAIN_DF = TRAIN_DF.drop(cols_to_remove, axis=1)
+        TEST_DF = TEST_DF.drop(cols_to_remove, axis=1)
     
-    cols = TRAIN_DF.columns
+    # Get column Info
+    cols = TOTAL_DF.columns
     
+    # To numpy
+    TOTAL_DF = TOTAL_DF.to_numpy()
     TRAIN_DF = TRAIN_DF.to_numpy()
     TEST_DF = TEST_DF.to_numpy()
     
@@ -74,22 +81,9 @@ def load_gen_data(file_name, scale_type = 'Standard', cols_to_remove = None):
     
     return TRAIN_DF, TEST_DF, TRAIN_SCALED, TEST_SCALED, TRAIN_Time, TEST_Time, cols, scaler
     
-# with no window collapsing
-class GenerationDataset(Dataset):
-    def __init__(self, data, window):
-        self.data = torch.Tensor(data)
-        self.window = window
- 
-    def __len__(self):
-        return len(self.data) // self.window # -1
-    
-    def __getitem__(self, index):
-        x = self.data[index*self.window:(index+1)*(self.window)]
-        return x
-    
 # loader with stride
-class NetisDataset(Dataset):
-    def __init__(self, data, timestamps, window_size, stride=1):
+class TimeSeriesDataset(Dataset):
+    def __init__(self, data, timestamps, window_size, stride=1, time_gap=100):
         self.data = torch.from_numpy(np.array(data))
         self.ts = np.array(timestamps)
         self.valid_idxs = []
@@ -100,7 +94,7 @@ class NetisDataset(Dataset):
             R = L + self.window_size - 1
             
             # append val indexs
-            if self.ts[R]-self.ts[L] == (self.window_size-1)*100:
+            if self.ts[R]-self.ts[L] == (self.window_size-1)*time_gap:
                 self.valid_idxs.append(L)
         
         self.valid_idxs = np.array(self.valid_idxs, dtype=np.int32)[::stride]
@@ -116,3 +110,15 @@ class NetisDataset(Dataset):
         return x.float()
 
 
+# with no window collapsing
+class GenerationDataset(Dataset):
+    def __init__(self, data, window):
+        self.data = torch.Tensor(data)
+        self.window = window
+ 
+    def __len__(self):
+        return len(self.data) // self.window # -1
+    
+    def __getitem__(self, index):
+        x = self.data[index*self.window:(index+1)*(self.window)]
+        return x

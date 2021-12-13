@@ -327,7 +327,7 @@ class VRAE(BaseEstimator, nn.Module):
             if (t + 1) % self.print_every == 0:
                 print('Batch %d, loss = %.4f, recon_loss = %.4f, kl_loss = %.4f' % (t + 1, loss.item(),
                                                                                     recon_loss.item(), kl_loss.item()))
-
+        
         print('Average loss: {:.4f}'.format(epoch_loss / t))
         
         return epoch_loss / t

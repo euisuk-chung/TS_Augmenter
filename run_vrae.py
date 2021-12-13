@@ -38,21 +38,23 @@ file_name = args.file_name # 데이터 파일명
 WINDOW_SIZE = args.window_size # Window size
 scale_type = args.scale_type # Scaler Type 설정 ('Standard' or 'MinMax' or 'Robust')
 undo = args.undo # reconstruction 시 unscale 수행여부
+cols_to_remove = args.cols_to_remove # 제거할 변수
+split = args.split # TRAIN/TEST Split 여부
+time_gap = args.time_gap # 데이터수집단위
+
 
 # Load & Scale data
-TRAIN_DF, TEST_DF, TRAIN_SCALED, TEST_SCALED, TRAIN_Time, TEST_Time, cols, scaler = load_gen_data(file_name = file_name, scale_type = scale_type)
+TRAIN_DF, TEST_DF, TRAIN_SCALED, TEST_SCALED, TRAIN_Time, TEST_Time, cols, scaler = load_gen_data(file_name = file_name, \
+                                                                                                  scale_type = scale_type,\
+                                                                                                  cols_to_remove = cols_to_remove,\
+                                                                                                  split = split)
 
 # under custom_dataset.py
 ## Train dataset with stride
-train_dataset = NetisDataset(data = TRAIN_SCALED, timestamps = TRAIN_Time, window_size = WINDOW_SIZE, stride =1)
-
-## Test dataset with no window collapse (for generation window size must be WINDOW_SIZE)
-train_gen_dataset = NetisDataset(data = TRAIN_SCALED, timestamps = TRAIN_Time, window_size = WINDOW_SIZE, stride = WINDOW_SIZE)
-
-test_gen_dataset = NetisDataset(data = TEST_SCALED, timestamps = TEST_Time, window_size = WINDOW_SIZE, stride = WINDOW_SIZE)
+train_dataset = TimeSeriesDataset(data = TRAIN_SCALED, timestamps = TRAIN_Time, window_size = WINDOW_SIZE, stride =1, time_gap = time_gap)
 
 # SET ARGUMENTS
-args.dload = "./save_model"
+args.dload = "./save_model_test" # CHANGE BACK TO NORMAL AFTER TESTING
 args.sequence_length = WINDOW_SIZE
 args.number_of_features = train_dataset[0].shape[1]
 
@@ -78,6 +80,10 @@ if args.is_train:
 
 # TRAIN dataset reconstruction
 if args.is_generate_train:
+    
+    # define train generation data
+    train_gen_dataset = TimeSeriesDataset(data = TRAIN_SCALED, timestamps = TRAIN_Time, window_size = WINDOW_SIZE, stride = WINDOW_SIZE, time_gap = time_gap)
+
     # FOR GENERATION MUST HAVE batch_size 1
     args.batch_size = 1
 
@@ -128,6 +134,10 @@ if args.is_generate_train:
     
 # TEST dataset reconstruction
 if args.is_generate_test:
+    
+    # define test generation data
+    test_gen_dataset = TimeSeriesDataset(data = TEST_SCALED, timestamps = TEST_Time, window_size = WINDOW_SIZE, stride = WINDOW_SIZE, time_gap = time_gap)
+
     # FOR GENERATION MUST HAVE batch_size 1
     args.batch_size = 1
 

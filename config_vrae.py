@@ -29,7 +29,22 @@ def parser_setting(parser):
     parser.add_argument(
         '--file_name',
         default='netis',
-        type=str)    
+        type=str)
+    parser.add_argument(
+        '--cols_to_remove',
+        default='Time',
+        type=str,
+        nargs='*',
+        help = 'Columns to Remove')
+    parser.add_argument(
+        "--split",
+        type=str2bool,
+        default=False,
+        help = 'Argument for Train/Test split')
+    parser.add_argument(
+        '--time_gap',
+        default=100,
+        type=int)
     
     # train/generate argument
     parser.add_argument(
@@ -40,10 +55,12 @@ def parser_setting(parser):
         "--is_generate_train",
         type=str2bool,
         default=True)
+    
+    # TODO : For further testing
     parser.add_argument(
         "--is_generate_test",
         type=str2bool,
-        default=True)
+        default=False)
     
     # rescaling argument
     parser.add_argument(

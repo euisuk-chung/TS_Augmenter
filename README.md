@@ -29,7 +29,6 @@ python run_vrae.py
 
 <img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/TimeGAN_architecture.PNG?raw=true' width="650" height="400">
 
-- 코드 작성자 : 박경찬
 - pyTorch implementation for `TimeGAN`
 - Code Reference : https://github.com/d9n13lt4n/timegan-pytorch
 
@@ -37,7 +36,6 @@ python run_vrae.py
 
 <img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/LSTM_VAE_architecture.png?raw=true' width="650" height="400">
 
-- 코드 작성자 : 정의석
 - pyTorch implementation for `VRAE`
 - Code Reference : https://github.com/tejaslodaya/timeseries-clustering-vae
 
@@ -68,7 +66,10 @@ TimeGAN has 2 Modes, which is used to decide whether to train or generate :
 VRAE has 3 Modes, which is used to decide whether to train or generate(train) or generate(test) :
 1. is_train (default = True) : train model with loaded train data (window_size=30, stride=1)
 2. is_generate_train (default = True) : generate train dataset loaded sequentially (window_size=stride)
-3. is_generate_test (default = True) : generate test dataset loaded sequentially (window_size=stride)
+3. is_generate_test (default = False) : generate test dataset loaded sequentially (window_size=stride)
+
+✨ The query for train/test split in my code is currently used for my side-project.
+✨ If you want to use train/test you need to go to `utils.custom_dataset` and change the query.
 
 ```
 # Mode 1 : Train mode
