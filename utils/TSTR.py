@@ -4,13 +4,14 @@ import numpy as np
 from sklearn.metrics import accuracy_score, mean_squared_error
 
 class GeneralRNN(torch.nn.Module):
-    r"""A general RNN model for time-series prediction
+    """
+    A general RNN model for time-series prediction
     """
 
     def __init__(self, args):
         super(GeneralRNN, self).__init__()
-        self.model_type = args['model_type']
 
+        self.model_type = args['model_type']
         self.input_size = args['in_dim']
         self.hidden_size = args['h_dim']
         self.output_size = args['out_dim']
@@ -86,13 +87,13 @@ def one_step_ahead_prediction(train_data, test_data):
     args["task"] = "regression"
     args["model_type"] = "gru"
     args["bidirectional"] = False
-    args["epochs"] = 20
+    args["epochs"] = 2000
     args["batch_size"] = 256
     args["in_dim"] = dim
-    args["h_dim"] = dim
+    args["h_dim"] = 30 # dim
     args["out_dim"] = dim
     args["n_layers"] = 3
-    args["dropout"] = 0.5
+    args["dropout"] = 0.3
     args["max_seq_len"] = 30  # only 29 is used for prediction
     args["learning_rate"] = 1e-3
     args["grad_clip_norm"] = 5.0
@@ -110,6 +111,7 @@ def one_step_ahead_prediction(train_data, test_data):
         batch_size=no,
         shuffle=True
     )
+    
     # Initialize model
     model = GeneralRNN(args)
     model.to(args["device"])
@@ -142,14 +144,25 @@ def one_step_ahead_prediction(train_data, test_data):
 
     # Evaluate the trained model
     with torch.no_grad():
-        perf = 0
+        perf = np.zeros((8789,2668))
+        ind = 0
         for test_x in test_dataloader:
             test_x = test_x.to(args["device"])
             test_p = model(test_x[:,0:29,:]).cpu()
 
-            test_p = np.reshape(test_p.numpy(), [-1])
-            test_y = np.reshape(test_x[:,1:30,:].cpu().numpy(), [-1])
+            test_p = np.reshape(test_p.numpy(), [test_p.numpy().shape[0],-1])
+            test_y = np.reshape(test_x[:,1:30,:].cpu().numpy(), [test_x[:,1:30,:].cpu().numpy().shape[0],-1])
 
-            perf += rmse_error(test_y, test_p)
+            perf[ind:ind+test_x[:,1:30,:].cpu().numpy().shape[0]] = test_p-test_y
+            ind = ind+test_x[:,1:30,:].cpu().numpy().shape[0]
+            #perf += rmse_error(test_y, test_p)
+            #perf2.append(rmse_error(test_y, test_p))
+        
+        mae = np.abs(perf).mean(1)
+        rmse = (perf * perf).mean(1)
+        rmse = np.sqrt(rmse)
+        
+        print(f'MAE : {mae.mean(0)}')
+        print(f'RMSE : {rmse.mean(0)}')
 
-    return perf
+    return perf, rmse.mean(0), mae.mean(0)

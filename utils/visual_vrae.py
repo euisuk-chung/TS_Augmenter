@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 
-def visualization(original_data, generated_data, analysis):
+def visualization(original_data, generated_data, analysis, name, x_zoom=False, y_zoom=False):
     """Using PCA or tSNE for generated and original data visualization.
 
     Args:
@@ -44,14 +44,18 @@ def visualization(original_data, generated_data, analysis):
 
         ax.legend()
         
-        plt.title('PCA plot')
-        plt.xlabel('x-pca')
-        plt.ylabel('y-pca')
+        if x_zoom != False and y_zoom != False:
+            plt.xlim(x_zoom[0],x_zoom[1])
+            plt.ylim(y_zoom[0],y_zoom[1])
+        
+        plt.title(f'{name} PCA')
+        plt.xlabel('PC_1')
+        plt.ylabel('PC_2')
         plt.show()
 
     elif analysis == 'tsne':
         # TSNE Analysis
-        tsne = TSNE(n_components=2, verbose=1, perplexity=40, n_iter=300)
+        tsne = TSNE(n_components=2, verbose=1, perplexity=50, n_iter=1000)
         
         # conat data
         concat_data = np.concatenate((original_data, generated_data), axis=0)
@@ -69,7 +73,11 @@ def visualization(original_data, generated_data, analysis):
 
         ax.legend()
         
-        plt.title('tsne plot')
+        if x_zoom != False and y_zoom != False:
+            plt.xlim(0,x_zoom)
+            plt.ylim(0,y_zoom)
+        
+        plt.title(f'{name} T-SNE')
         plt.xlabel('x-tsne')
         plt.ylabel('y-tsne')
         plt.show()
