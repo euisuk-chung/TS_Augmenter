@@ -54,7 +54,7 @@ TRAIN_DF, TEST_DF, TRAIN_SCALED, TEST_SCALED, TRAIN_Time, TEST_Time, cols, scale
 train_dataset = TimeSeriesDataset(data = TRAIN_SCALED, timestamps = TRAIN_Time, window_size = WINDOW_SIZE, stride =1, time_gap = time_gap)
 
 # SET ARGUMENTS
-args.dload = "./save_model_test" # CHANGE BACK TO NORMAL AFTER TESTING
+args.dload = "./save_model"
 args.sequence_length = WINDOW_SIZE
 args.number_of_features = train_dataset[0].shape[1]
 
