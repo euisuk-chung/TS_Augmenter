@@ -32,14 +32,14 @@ python run_vrae.py --file_name test_data --cols_to_remove Time MNG_NO --time_gap
 ## 3. Models Used
 ### 3.1. TimeGAN
 
-<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/TimeGAN_architecture.PNG?raw=true' width="650" height="400">
+<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/TimeGAN_architecture.PNG?raw=true' width="800" height="400">
 
 - pyTorch implementation for `TimeGAN`
 - Code Reference : https://github.com/d9n13lt4n/timegan-pytorch
 
 ### 3.2. Variational Recurrent AutoEncoder (VRAE)
 
-<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/LSTM_VAE_architecture.png?raw=true' width="650" height="400">
+<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/LSTM_VAE_architecture.png?raw=true' width="800" height="400">
 
 - pyTorch implementation for `VRAE`
 - Code Reference : https://github.com/tejaslodaya/timeseries-clustering-vae
