@@ -112,7 +112,7 @@ VRAE has following modes (for more check `config_vrae.py`) :
 
 --is_generate_train `True` or `False` # 학습된 latent space와 Train Data를 바탕으로 데이터 생성 
 
---is_generate_test `True` or `False` # 학습된 latent space와 Test 데이터 생성 (실험용 : 데이터 생성 시 사용할 필요 X)
+--is_generate_test `True` or `False` # 학습된 latent space와 Test Data를 바탕으로 데이터 생성 (실험용 : 데이터 생성 시 사용할 필요 X)
 
 --n_epochs 2000 # 모델 학습할 Epoch 수
 
