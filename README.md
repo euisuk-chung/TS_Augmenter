@@ -53,7 +53,7 @@ python run_vrae.py --file_name test_data --cols_to_remove Time MNG_NO --time_gap
 
 Training method for each model are the same, which uses dataset that is loaded by moving sliding window(default=30) with certain stride(default=1).
 
-<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/train_test_image.png?raw=true' width="650" height="400">
+<img src = 'https://github.com/euisuk-chung/timeseries-generation/blob/main/image/train_test_image.png?raw=true' width="800" height="400">
 
 There are few things you need to know before implementing our code : 
 
