@@ -2,6 +2,8 @@ import torch
 from tqdm import tqdm, trange
 import numpy as np
 from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.metrics.cluster import normalized_mutual_info_score
+
 
 class GeneralRNN(torch.nn.Module):
     """
@@ -166,3 +168,46 @@ def one_step_ahead_prediction(train_data, test_data):
         print(f'RMSE : {rmse.mean(0)}')
 
     return perf, rmse.mean(0), mae.mean(0)
+
+def calculate_nmi(train_data, test_data):
+    """Use the previous time-series to predict one-step ahead feature values.
+    Args:
+    - train_data: training time-series
+    - test_data: testing time-series
+    Returns:
+    - perf: average performance of one-step ahead predictions (in terms of AUC or MSE)
+    """
+    train_data = train_data
+    test_data = test_data
+
+    # Set training features and labels
+    train_dataloader = torch.utils.data.DataLoader(
+        train_data,
+        batch_size=1,
+        shuffle=True
+    )
+
+    # Set testing features and labels
+    test_dataloader = torch.utils.data.DataLoader(
+        test_data,
+        batch_size=1,
+        shuffle=True
+    )
+    
+    nmi_score = []
+    
+    # load train/test at the same time
+    for org_data, gen_data in tqdm(zip(train_dataloader, test_dataloader), total = len(train_dataloader)):
+        org_data = org_data.squeeze()
+        gen_data = gen_data.squeeze()
+        
+        f_num = org_data.shape[-1]
+        
+        batch_score = []
+        for i in range(f_num):
+            col_score = normalized_mutual_info_score(org_data[:,i],gen_data[:,i])
+            batch_score.append(col_score)
+        nmi_score.append(np.mean(batch_score))
+    # print(f'NMI SCORE : {nmi_score}')
+    print(f'NMI SCORE : {np.mean(nmi_score)}')    
+    return nmi_score
